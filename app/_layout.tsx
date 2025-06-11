@@ -47,10 +47,12 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Providers>
-        <SplashScreenController />
-        <RootLayoutNav />
-      </Providers>
+      <SessionProvider>
+        <Providers>
+          <SplashScreenController />
+          <RootLayoutNav />
+        </Providers>
+      </SessionProvider>
     </GestureHandlerRootView>
   );
 }
@@ -60,17 +62,18 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 };
 
 function RootLayoutNav() {
-  //const { session } = useSession();
+  const { session } = useSession();
+  console.log("Session:", session);
   const colorScheme = useColorScheme();
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <StatusBar style={colorScheme === "dark" ? "light" : "light"} />
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={false}>
+        <Stack.Protected guard={!!session}>
           <Stack.Screen name="(tabs)" />
         </Stack.Protected>
 
-        <Stack.Protected guard={true}>
+        <Stack.Protected guard={!session}>
           <Stack.Screen name="(auth)/login2" />
         </Stack.Protected>
       </Stack>

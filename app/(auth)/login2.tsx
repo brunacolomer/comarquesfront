@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import {
   Anchor,
   H2,
-  Paragraph,
   XStack,
   YStack,
   Text,
@@ -22,19 +21,14 @@ import {
 } from "react-native";
 import Svg, { Path, Polygon } from "react-native-svg";
 import mapDataComarques from "../../constants/MapaPathsComarques.json";
+import { useSession } from "../../auth/ctx";
 
 import { Dimensions } from "react-native";
-
-/*const screenHeight = Dimensions.get("window").height;
-const screenWidth = Dimensions.get("window").width;*/
-
-const signIn = (username, password) => {
-  console.log("Signing in with", username, password);
-};
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 export default function Login2() {
-  const screenHeight = 700;
-  const screenWidth = 400;
+  const { signIn } = useSession();
   const [visible, setVisible] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -45,11 +39,10 @@ export default function Login2() {
         {/* Fons taronja separat, no afectat pel teclat */}
         <YStack
           position="absolute"
-          top={0}
-          left={0}
-          right={0}
+          t={0}
+          l={0}
+          r={0}
           height={screenHeight * 0.48}
-          zIndex={0}
         >
           <Svg width="100%" height="100%" viewBox={"500 50 300 75"}>
             {Object.keys(mapDataComarques).map((region) =>

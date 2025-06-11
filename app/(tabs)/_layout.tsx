@@ -34,13 +34,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <AudioWaveform color={color as any} />,
-        }}
-      />
+
       <Tabs.Screen
         name="three"
         options={{

@@ -1,6 +1,14 @@
-import { use, useContext, createContext, type PropsWithChildren } from "react";
+import {
+  use,
+  useContext,
+  useEffect,
+  createContext,
+  type PropsWithChildren,
+} from "react";
 import { useStorageState } from "./useStorageState";
 
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+console.log("API_URL:", API_URL);
 const AuthContext = createContext<{
   signIn: (
     email: string | undefined,
@@ -9,11 +17,20 @@ const AuthContext = createContext<{
   signOut: () => void;
   session?: string | null;
   isLoading: boolean;
+  register: (
+    username: string | undefined,
+    password: string | undefined,
+    email: string | undefined,
+    name: string | undefined,
+    surnames: string | undefined,
+    poblacio: string | undefined
+  ) => Promise<void>;
 }>({
   signIn: async () => {},
   signOut: () => null,
   session: null,
   isLoading: false,
+  register: async () => {},
 });
 
 // This hook can be used to access the user info.
@@ -38,29 +55,81 @@ export function SessionProvider({ children }: PropsWithChildren) {
         ) => {
           console.log("Signing in with", username, password);
           try {
-            const response = await fetch(
-              "http://192.168.245.219:8000/api/token/",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  username: username,
-                  password: password,
-                }),
-              }
-            );
+            const response = await fetch(`${API_URL}/token/`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                username: username,
+                password: password,
+              }),
+            });
+            if (!response.ok) {
+              console.error("Failed to sign in:", response.statusText);
+              return;
+            }
             console.log("Response:", response);
+
+            const data = await response.json();
+            console.log("Data:", data);
+            setSession(data.access); // Assuming the token is in the 'access' field
           } catch (error) {
             console.log("Error during sign-in:", error);
           }
 
           // Perform sign-in logic here
-          setSession("xxx");
         },
         signOut: () => {
           setSession(null);
+        },
+        register: async (
+          username: string | undefined,
+          password: string | undefined,
+          email: string | undefined,
+          name: string | undefined,
+          surnames: string | undefined,
+          poblacio: string | undefined
+        ) => {
+          console.log(
+            "Registering with",
+            username,
+            password,
+            email,
+            name,
+            surnames,
+            poblacio
+          );
+          try {
+            const response = await fetch(`${API_URL}/registre/`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                username,
+                password,
+                first_name: name,
+                last_name: surnames,
+                email,
+                poblacio,
+              }),
+            });
+            if (!response.ok) {
+              console.error("Failed to register:", response.statusText);
+              return;
+            }
+            console.log("Response:", response);
+
+            const data = await response.json();
+            console.log("Data:", data);
+            console.log("el que guardarem", data.access);
+            setSession(data.access); // Assuming the token is in the 'access' field
+          } catch (error) {
+            console.log("Error during registration:", error);
+          }
+
+          // Perform registration logic here
         },
         session,
         isLoading,
