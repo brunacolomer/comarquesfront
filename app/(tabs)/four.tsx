@@ -1,8 +1,13 @@
+import { YStack, Text, Button, Image } from "tamagui";
+import FlipCard from "react-native-flip-card";
+import { Dimensions, View } from "react-native";
 import { useState } from "react";
-import { YStack, Text, Button, XStack, View } from "tamagui";
+
+const screen = Dimensions.get("window");
 
 export default function FabMenuTamagui() {
   const [open, setOpen] = useState(false);
+  const [flipped, setFlipped] = useState(false);
 
   return (
     <>
@@ -18,7 +23,42 @@ export default function FabMenuTamagui() {
       )}
 
       <Text>Bon dia, què tal com estem família?</Text>
-
+      <FlipCard
+        flip={flipped}
+        style={{
+          position: "absolute",
+        }}
+      >
+        <YStack
+          bg="white"
+          p="$4"
+          t={250}
+          gap="$4"
+          l={screen.width * 0.125}
+          width={screen.width * 0.75}
+          z={1001}
+          items="center"
+          onPress={() => setFlipped(true)}
+        >
+          <Text color="black">
+            Encara no tens cap amic en aquesta comarca, surt del cau i ves a
+            conèixer algú
+          </Text>
+        </YStack>
+        <YStack
+          bg="white"
+          p="$4"
+          t={250}
+          gap="$4"
+          l={screen.width * 0.125}
+          width={screen.width * 0.75}
+          z={1001}
+          items="center"
+          onPress={() => setFlipped(false)}
+        >
+          <Text color="black">Es el darrrrererererre</Text>
+        </YStack>
+      </FlipCard>
       <Button
         onPress={() => console.log("Pressed")}
         bg="$blue5"

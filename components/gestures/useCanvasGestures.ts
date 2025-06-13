@@ -1,10 +1,11 @@
 // useCanvasGestures.ts
-import { Dimensions } from "react-native";
+import { Dimensions, Keyboard } from "react-native";
 import { Gesture } from "react-native-gesture-handler";
 import {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
+  runOnJS,
 } from "react-native-reanimated";
 
 const screen = Dimensions.get("window");
@@ -17,6 +18,11 @@ export function useCanvasGestures() {
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);
   const isPanning = useSharedValue(false);
+
+  const dismissKeyboard = () => {
+    console.log("Dismissing keyboard");
+    Keyboard.dismiss();
+  };
 
   const pinchGesture = Gesture.Pinch()
     .onStart((e) => {
@@ -35,6 +41,7 @@ export function useCanvasGestures() {
 
   const panGesture = Gesture.Pan()
     .onStart(() => {
+      runOnJS(dismissKeyboard)();
       isPanning.value = true;
     })
     .onChange((e) => {
@@ -47,6 +54,9 @@ export function useCanvasGestures() {
 
   const doubleTapGesture = Gesture.Tap()
     .numberOfTaps(2)
+    .onBegin(() => {
+      runOnJS(dismissKeyboard)();
+    })
     .onEnd(() => {
       translateX.value = withTiming(0);
       translateY.value = withTiming(0);

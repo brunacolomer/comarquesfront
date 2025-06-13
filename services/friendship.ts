@@ -32,13 +32,16 @@ export async function createFriendship(
       friend,
       descripcio,
     });
-    const response = await fetch("http://.86.219:8000/api/amistats/crear/", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+    const response = await fetch(
+      "http://192.168.86.253:8000/api/amistats/crear/",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
 
     if (!response.ok) {
       const err = await response.text();

@@ -6,6 +6,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { useStorageState } from "./useStorageState";
+import { setAuthToken } from "services/api";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 console.log("API_URL:", API_URL);
@@ -46,6 +47,37 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
 
+  useEffect(() => {
+    const validateToken = async () => {
+      if (!session) return;
+
+      try {
+        const response = await fetch(`${API_URL}/token/verify/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: session, // el token guardat
+          }),
+        });
+
+        if (!response.ok) {
+          console.warn("Token invàlid o expirat");
+          setSession(null);
+        } else {
+          console.log("Token vàlid");
+        }
+      } catch (error) {
+        console.error("Error validant el token:", error);
+        setSession(null);
+      }
+    };
+    setAuthToken(session);
+
+    validateToken();
+  }, [session]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -54,6 +86,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
           password: string | undefined
         ) => {
           console.log("Signing in with", username, password);
+          console.log("API_URL:", API_URL);
           try {
             const response = await fetch(`${API_URL}/token/`, {
               method: "POST",
