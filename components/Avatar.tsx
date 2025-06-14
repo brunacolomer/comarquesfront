@@ -14,7 +14,7 @@ export const AvatarInicial = ({
 
   return (
     <Avatar circular size={size}>
-        <Avatar.Fallback backgroundColor={"$primaryDark"} justifyContent="center" alignItems="center">
+        <Avatar.Fallback backgroundColor={"$primary"} justifyContent="center" alignItems="center">
             <Text fontSize={24} fontWeight="bold" color="$color">
             {inicial}
             </Text>

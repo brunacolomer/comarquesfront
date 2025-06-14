@@ -20,8 +20,8 @@ export const RankingItem = ({
     justify="space-between"
     items="flex-start"
     borderBottomWidth={1}
-    bg={destacat ? "$yellow3" : undefined}
-    borderColor={"$primaryDark"}
+    bg={destacat ? "$background" : undefined}
+    borderColor={"$background"}
   >
     <XStack width="100%" py="$3" px="$4" items="center" justify="space-between">
       {/* Bloc esquerre: posició, avatar, nom */}

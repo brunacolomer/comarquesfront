@@ -1,51 +1,62 @@
-import { YStack, ScrollView } from "tamagui";
-import { PodiTop3 } from "../../components/PodiTop3";
-import { RankingItem } from "../../components/RankingItem";
-
-const ranking = [
-  { username: "gatet", punts: 2420 },
-  { username: "bruna", punts: 2300 },
-  { username: "joel", punts: 2000 },
-  { username: "maria", punts: 1900 },
-  { username: "pol", punts: 1700 },
-  { username: "nuria", punts: 1620},
-  { username: "pau", punts: 1600 }, // no està al top
-  { username: "sgi", punts: 1600 }, // no està al top
-
-];
-
-const usuariActual = "pau"; // usuari loguejat
+import React, { use, useCallback, useRef, useState } from 'react';
+import { FlatList, ViewToken } from 'react-native';
+import { YStack } from 'tamagui';
+import { RankingItem } from '../../components/RankingItem';
+import { PodiTop3 } from '../../components/PodiTop3';
+import { useRanking } from '../../hooks/useRanking';
 
 export default function Ranking() {
-  const posicioUsuari = ranking.findIndex((u) => u.username === usuariActual);
-  const usuariDestacat = ranking[posicioUsuari];
-  
+  const [usuariVisible, setUsuariVisible] = useState(false);
+
+  const { ranking, loading, error } = useRanking();
+  const usuariActual = ranking.find((item) => item.es_meu);
+  const top3 = ranking.slice(0, 3);
+
+  const handleMostrar = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    const visible = viewableItems.some(item => item.item.es_meu);
+    if (!visible) setUsuariVisible(true);
+  }, []);
+
+  const handleAmagar = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    const completamentVisible = viewableItems.some(item => item.item.es_meu);
+    if (completamentVisible) setUsuariVisible(false);
+  }, []);
+
+  const configMostrar = useRef({ viewAreaCoveragePercentThreshold: 1 });
+  const configAmagar = useRef({ viewAreaCoveragePercentThreshold: 50 });
+
+  const callbackPairs = useRef([
+    { viewabilityConfig: configMostrar.current, onViewableItemsChanged: handleMostrar },
+    { viewabilityConfig: configAmagar.current, onViewableItemsChanged: handleAmagar }
+  ]);
 
   return (
     <YStack flex={1} bg="$background">
-      <ScrollView>
-        <PodiTop3 />
-
-        {ranking.map((usuari, index) => (
+      <FlatList
+        data={ranking}
+        keyExtractor={(item) => item.username}
+        ListHeaderComponent={<PodiTop3 top3={top3} />}
+        renderItem={({ item, index }) => (
           <RankingItem
-            key={usuari.username}
             posicio={index + 1}
-            username={usuari.username}
-            punts={usuari.punts}
-            destacat={usuari.username === usuariActual}
+            username={item.username}
+            punts={item.puntuacio}
+            destacat={item.es_meu}
           />
-        ))}
+        )}
+        viewabilityConfigCallbackPairs={callbackPairs.current}
+      />
 
-      </ScrollView>
-      <RankingItem
-            key={usuariActual}
-            posicio={posicioUsuari+1}
-            username={usuariActual}
-            punts={usuariDestacat.punts}
+      {usuariVisible && usuariActual && (
+        <YStack position="absolute" b={0} l={0} r={0} bg="$neutralLight" >
+          <RankingItem
+            posicio={ranking.findIndex(item => item.es_meu) + 1}
+            username={usuariActual.username}
+            punts={usuariActual.puntuacio}
             destacat
-        />
-
-
+          />
+        </YStack>
+      )}
     </YStack>
   );
 }
