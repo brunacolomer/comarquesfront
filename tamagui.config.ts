@@ -60,6 +60,8 @@ export const config = createTamagui({
         2: 12,
         3: 14,
         4: 16,
+        5: 20,
+        6: 24
       },
       lineHeight: {
         1: 20,
@@ -104,6 +106,17 @@ export const config = createTamagui({
   tokens: {
     ...defaultConfig.tokens,
 
+    color: {
+      primary: "#c67d45",
+      primaryDark: "#955e34",
+      primaryDarker: "#452c18",
+      neutralLight: "#fdfcfc",
+      neutral: "#fbfaf9",
+      neutralDark: "#f9f7f5",
+      secondary: "#fbbf24",
+      accent: "#8b5cf6",
+    },
+
     space: {
       0: 0,
       1: 4,
@@ -114,6 +127,7 @@ export const config = createTamagui({
       6: 24,
       7: 32,
       8: 40,
+      9: 48,
       true: 16,
     },
     size: {

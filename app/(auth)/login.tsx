@@ -22,17 +22,15 @@ import {
 } from "react-native";
 import Svg, { Path, Polygon } from "react-native-svg";
 import mapDataComarques from "../../constants/MapaPathsComarques.json";
-
+import { useSession } from "auth/ctx";
 import { Dimensions } from "react-native";
 
 /*const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;*/
 
-const signIn = (username, password) => {
-  console.log("Signing in with", username, password);
-};
 
 export default function Login() {
+  const { signIn } = useSession();
   const screenHeight = 700;
   const screenWidth = 400;
   const [visible, setVisible] = useState(false);
@@ -46,11 +44,11 @@ export default function Login() {
         <YStack
           bg="$primaryDark"
           position="absolute"
-          top={0}
-          left={0}
-          right={0}
+          t={0}
+          l={0}
+          r={0}
           height={screenHeight * 0.48}
-          zIndex={0}
+          z={0}
         >
           <Svg width="100%" height="100%" viewBox={"500 50 300 75"}>
             {Object.keys(mapDataComarques).map((region) =>
@@ -163,7 +161,7 @@ export default function Login() {
                   signIn(username, password);
                   // Navigate after signing in. You may want to tweak this to ensure sign-in is
                   // successful before navigating.
-                  router.replace("/");
+                  router.replace("/home");
                 }}
               >
                 Log in

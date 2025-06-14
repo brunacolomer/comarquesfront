@@ -74,7 +74,7 @@ function RootLayoutNav() {
         </Stack.Protected>
 
         <Stack.Protected guard={!session}>
-          <Stack.Screen name="(auth)/login2" />
+          <Stack.Screen name="(auth)/login" />
         </Stack.Protected>
       </Stack>
     </ThemeProvider>
