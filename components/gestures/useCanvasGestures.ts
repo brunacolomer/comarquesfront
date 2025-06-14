@@ -10,7 +10,7 @@ import {
 
 const screen = Dimensions.get("window");
 
-export function useCanvasGestures() {
+export function useCanvasGestures(onSwipe: () => void) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const scale = useSharedValue(1);
@@ -18,7 +18,10 @@ export function useCanvasGestures() {
   const focalX = useSharedValue(0);
   const focalY = useSharedValue(0);
   const isPanning = useSharedValue(false);
-
+  const logSwipe = () => {
+    console.log("👈 Has fet un flick ràpid cap a l'esquerra a baix!");
+    onSwipe();
+  };
   const dismissKeyboard = () => {
     console.log("Dismissing keyboard");
     Keyboard.dismiss();
@@ -40,7 +43,7 @@ export function useCanvasGestures() {
     });
 
   const panGesture = Gesture.Pan()
-    .onStart(() => {
+    .onStart((e) => {
       runOnJS(dismissKeyboard)();
       isPanning.value = true;
     })
@@ -48,8 +51,16 @@ export function useCanvasGestures() {
       translateX.value += e.changeX;
       translateY.value += e.changeY;
     })
-    .onEnd(() => {
+    .onEnd((e) => {
       isPanning.value = false;
+
+      const isInBottomLeft = e.absoluteY > screen.height * 0.7;
+
+      const isFastLeftSwipe = e.velocityX < -800;
+
+      if (isInBottomLeft && isFastLeftSwipe) {
+        runOnJS(logSwipe)();
+      }
     });
 
   const doubleTapGesture = Gesture.Tap()

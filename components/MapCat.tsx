@@ -37,7 +37,11 @@ const MapCat = ({
   return (
     <Svg width="100%" height="100%" viewBox={viewBox}>
       {Object.entries(comarques).map(([region, data]) => {
-        const filling = data.info?.amics ? "red" : "none";
+        const friends = data.info?.num_amics || 0;
+        const filling = friends
+          ? `rgba(198, 125, 69, ${friends * 0.5})`
+          : "none";
+
         return comarques[region].d ? (
           <Path
             key={region}
