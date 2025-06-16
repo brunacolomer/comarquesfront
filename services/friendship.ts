@@ -1,6 +1,8 @@
 import * as SecureStore from "expo-secure-store";
 import { useSession } from "auth/ctx";
 import * as FileSystem from "expo-file-system";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 export async function createFriendship(
   image: { uri: string; name: string; type: string } | null,
   friend: string,
@@ -32,16 +34,13 @@ export async function createFriendship(
       friend,
       descripcio,
     });
-    const response = await fetch(
-      "http://192.168.86.253:8000/api/amistats/crear/",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      }
-    );
+    const response = await fetch(`${API_URL}/amistats/crear/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
 
     if (!response.ok) {
       const err = await response.text();

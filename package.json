@@ -53,6 +53,7 @@
     "react-native-svg": "^15.11.2",
     "react-native-svg-pan-zoom": "^0.1.2",
     "react-native-web": "^0.20.0",
+    "svg-path-bounds": "^1.0.2",
     "tamagui": "^1.126.14"
   },
   "devDependencies": {

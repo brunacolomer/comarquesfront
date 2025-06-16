@@ -1,5 +1,4 @@
 import { YStack, Text, Button, Image } from "tamagui";
-import { ComarcaData } from "../types/comarques";
 import FlipCard from "react-native-flip-card";
 import { Dimensions, View, Pressable } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
@@ -11,9 +10,29 @@ import Animated, {
   interpolate,
 } from "react-native-reanimated";
 
+export type Repte = {
+  assolit: boolean;
+  data: string; // o Date si després la parses
+  descripcio_assolit: string;
+  descripcio_repte: string;
+  foto: string;
+  nom: string;
+};
+
+export type ComarcaData = {
+  d?: string;
+  points?: string;
+  viewBox?: string;
+  info?: Repte;
+};
+
+export type ComarquesMap = {
+  [region: string]: ComarcaData;
+};
+
 const screen = Dimensions.get("window");
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-export const Polaroid = ({
+export const PolaroidRepte = ({
   visible,
   onClose,
   info,
@@ -24,79 +43,33 @@ export const Polaroid = ({
   info?: any;
   content: ComarcaData;
 }) => {
-  const amics = content.info?.num_amics || 0; // Si no hi ha amics, per defecte 0
-
-  const items = Array.from({ length: amics }, (_, i) => ({
-    id: i,
-    foto:
-      content.info?.amics[i]?.foto ||
-      "https://i.pinimg.com/736x/d9/35/ee/d935eee014980f34692e8a4a7382aaf9.jpg",
-    username: content.info?.amics[i]?.username || "Desconegut",
-    data: content.info?.amics[i]?.data || "Desconegut",
-    descripcio: content.info?.amics[i]?.descripcio || "Sense descripció",
-  }));
-  console.log("Items:", items);
   return (
-    <>
-      {visible && amics > 0 ? (
-        <YStack z={2000} position="absolute" fullscreen>
-          <Carousel
-            width={screen.width}
-            data={items}
-            loop={items.length > 2}
-            autoPlay={false}
-            mode="parallax"
-            modeConfig={{
-              parallaxScrollingScale: 1,
-              parallaxScrollingOffset: 200,
-              parallaxAdjacentItemScale: 0.6,
-            }}
-            renderItem={({ item }) => (
-              <Card
-                visible={visible}
-                onClose={onClose}
-                info={info}
-                content={content}
-                foto={item.foto}
-                username={item.username}
-                descripcio={item.descripcio}
-              />
-            )}
-          />
-        </YStack>
-      ) : (
-        <Card
-          visible={visible}
-          onClose={onClose}
-          info={info}
-          content={content}
-          foto={
-            "https://i.pinimg.com/736x/d9/35/ee/d935eee014980f34692e8a4a7382aaf9.jpg"
-          }
-          username={"No tens amics encara puça"}
-          descripcio={"busca un amiguet va, obra el tindercat"}
-        ></Card>
-      )}
-    </>
+    <Card
+      visible={visible}
+      onClose={onClose}
+      foto={
+        content.info?.foto ||
+        "https://i.pinimg.com/736x/d9/35/ee/d935eee014980f34692e8a4a7382aaf9.jpg"
+      }
+      descripcio={content.info?.descripcio_repte || null}
+      assolit={content.info?.descripcio_assolit || null}
+    ></Card>
   );
 };
 
 export const Card = ({
   visible,
   onClose,
-  info,
-  content,
   foto,
-  username,
   descripcio,
+  assolit,
 }: {
   visible: boolean;
   onClose: () => void;
   info?: any;
-  content: ComarcaData;
   foto: string;
-  username: string;
-  descripcio: string;
+  descripcio: string | null;
+  assolit: string | null;
 }) => {
   const rotation = useSharedValue(0);
   console.log("fototototo", foto);
@@ -158,7 +131,7 @@ export const Card = ({
                 width="100%"
                 aspectRatio={1}
               />
-              <Text color="black">{username || "Desconegut"}</Text>
+              <Text color="black">{assolit || "No està assolit encara"}</Text>
             </YStack>
           </AnimatedPressable>
           <AnimatedPressable
