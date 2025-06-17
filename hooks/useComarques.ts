@@ -3,15 +3,18 @@ import { getComarques } from "services/comarques";
 import mapDataComarques from "../constants/MapaPathsComarques.json";
 import { ComarquesMap } from "types/comarques";
 import { createFriendship } from "services/friendship";
+import { useSession } from "auth/ctx";
 
 export const useComarques = () => {
   const [comarques, setComarques] = useState<ComarquesMap>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { session } = useSession();
   const fetchComarques = async () => {
     setIsLoading(true);
     try {
       const backendData = await getComarques();
+      console.log(backendData);
       const mapa = { ...mapDataComarques };
       Object.keys(backendData).map((region) => {
         if (mapa[region]) {
@@ -31,8 +34,9 @@ export const useComarques = () => {
     }
   };
   useEffect(() => {
+    if (!session) return;
     fetchComarques();
-  }, []);
+  }, [session]);
 
   const createFriend = async (
     image: { uri: string; name: string; type: string } | null,

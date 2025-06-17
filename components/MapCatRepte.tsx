@@ -35,9 +35,8 @@ const MapCatRepte = ({
     <Svg width="100%" height="100%" viewBox={viewBox}>
       {Object.entries(comarques).map(([region, data]) => {
         const friends = data.info?.foto ? 1 : 0; // Aquí pots ajustar la lògica per obtenir el nombre d'amics
-        const filling = friends
-          ? `rgba(198, 125, 69, ${friends * 0.5})`
-          : "none";
+
+        const filling = friends ? "#c67d45" : "none";
 
         return comarques[region].d ? (
           <Path

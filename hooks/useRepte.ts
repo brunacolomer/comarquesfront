@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getRepte } from "services/reptes";
 import mapDataComarques from "../constants/MapaPathsComarques.json";
-
+import { useSession } from "auth/ctx";
 type ComarcaItem = {
   nom: string;
   descripcio_repte: string | null;
@@ -29,9 +29,9 @@ export const useRepte = ({ id }: { id: number }) => {
   const [error, setError] = useState<Error | null>(null);
   const [ComarquesMap, setComarquesMap] = useState<{ [key: string]: any }>({});
   const [capçalera, setCapçalera] = useState<capçalera | null>(null);
-
+  const { session } = useSession();
   const fetchRepte = async () => {
-    if (id === -1) return;
+    if (id === -1 || !session) return;
 
     try {
       const data = await getRepte(id);
@@ -66,8 +66,10 @@ export const useRepte = ({ id }: { id: number }) => {
     fetchRepte();
   };
   useEffect(() => {
+    if (!session) return;
+
     fetchRepte();
-  }, [id]);
+  }, [id, session]);
 
   return { ComarquesMap, capçalera, loading, reload: reload, error };
 };

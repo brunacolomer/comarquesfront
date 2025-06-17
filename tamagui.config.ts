@@ -61,7 +61,7 @@ export const config = createTamagui({
         3: 14,
         4: 16,
         5: 20,
-        6: 24
+        6: 24,
       },
       lineHeight: {
         1: 20,
@@ -183,7 +183,7 @@ export const config = createTamagui({
       primary: "#ec4899",
       secondary: "#facc15", // groc daurat
       accent: "#c084fc", // lila clar
-      background: "#111827", // gris molt fosc
+      background: "white", // gris molt fosc
       backgroundHover: "#1f2937",
       backgroundPress: "#374151",
       color: "#ffffff",

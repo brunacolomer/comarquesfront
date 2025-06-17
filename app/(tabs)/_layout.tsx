@@ -1,6 +1,13 @@
-import { Link, Tabs } from "expo-router";
-import { Button, useTheme } from "tamagui";
-import { Atom, AudioWaveform } from "@tamagui/lucide-icons";
+import { Tabs } from "expo-router";
+import { useTheme } from "tamagui";
+import {
+  Home,
+  Map,
+  Archive,
+  Download,
+  Medal,
+  Compass,
+} from "@tamagui/lucide-icons";
 
 export default function TabLayout() {
   const theme = useTheme();
@@ -8,39 +15,46 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: theme.red10.val,
+        sceneStyle: {
+          backgroundColor: "white", // <- això és clau per evitar parpelleigs foscos
+        },
+
         tabBarStyle: {
-          backgroundColor: theme.background.val,
-          borderTopColor: theme.borderColor.val,
+          backgroundColor: "white",
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowOpacity: 0,
+          height: 70,
         },
-        headerStyle: {
-          backgroundColor: theme.background.val,
-          borderBottomColor: theme.borderColor.val,
+        tabBarActiveTintColor: "#C47F3D",
+        tabBarInactiveTintColor: "#2D221B",
+        tabBarLabelStyle: {
+          fontSize: 10,
+          marginBottom: 5,
         },
-        headerTintColor: theme.color.val,
+        headerShown: true,
       }}
     >
       <Tabs.Screen
-        name="index"
-        options={{
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <Atom color={color as any} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Button mr="$4" bg="$green8" color="$green12">
-                Hello!
-              </Button>
-            </Link>
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <AudioWaveform color={color as any} />,
-          headerShown: false,
+          title: "Mapa",
+          headerShown: false, // si vols ocultar el header
+          tabBarIcon: ({ color }) => <Map color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="feed"
+        options={{
+          title: "Feed",
+          tabBarIcon: ({ color }) => <Compass color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="ranking"
+        options={{
+          title: "Rànking",
+          tabBarIcon: ({ color }) => <Medal color={color} size={24} />,
         }}
       />
     </Tabs>

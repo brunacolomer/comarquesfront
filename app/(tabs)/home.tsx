@@ -125,10 +125,12 @@ export default function InfiniteCanvas() {
       <AddMenu open={open} setOpen={setOpen} addAmic={createFriend} />
 
       {/* Wrap the entire map content in animated view for transitions */}
-      <Animated.View style={[{ flex: 1 }, slideStyle]}>
+      <Animated.View
+        style={[{ flex: 1, backgroundColor: "white" }, slideStyle]}
+      >
         {map === "amics" ? (
           isLoading ? (
-            <YStack flex={1} justify="center" items="center" bg="$background">
+            <YStack flex={1} justify="center" items="center">
               <Text>Carregant mapa...</Text>
               {/* Pots afegir un spinner si vols */}
             </YStack>
