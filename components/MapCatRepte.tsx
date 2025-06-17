@@ -25,7 +25,7 @@ type MapCatProps = {
   viewBox?: string;
   comarques: ComarquesMap;
 };
-const MapCat = ({
+const MapCatRepte = ({
   pathColors = {},
   onPathPress = (region: string) => {},
   viewBox = "0 0 800 800",
@@ -65,4 +65,4 @@ const MapCat = ({
   );
 };
 
-export default MapCat;
+export default MapCatRepte;

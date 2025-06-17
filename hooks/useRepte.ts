@@ -30,45 +30,44 @@ export const useRepte = ({ id }: { id: number }) => {
   const [ComarquesMap, setComarquesMap] = useState<{ [key: string]: any }>({});
   const [capçalera, setCapçalera] = useState<capçalera | null>(null);
 
-  useEffect(() => {
-    const fetchRepte = async () => {
-      try {
-        const data = await getRepte(id);
-        setRepte(data);
-        console.log(data);
-        const mapa = { ...mapDataComarques };
-        data.comarques.forEach((comarca) => {
-          const nom = comarca.nom;
-          console.log(
-            "Nom comarca:",
-            nom,
-            "Dades comarca:",
-            comarca.descripcio_repte
-          );
-          if (mapa[nom]) {
-            mapa[nom] = {
-              ...mapa[nom],
-              info: comarca,
-            };
-          }
-        });
+  const fetchRepte = async () => {
+    if (id === -1) return;
 
-        setCapçalera({
-          id: data.id,
-          titol: data.titol,
-          es_original: data.es_original,
-        });
+    try {
+      const data = await getRepte(id);
+      setRepte(data);
+      const mapa = { ...mapDataComarques };
+      data.comarques.forEach((comarca) => {
+        const nom = comarca.nom;
 
-        setComarquesMap(mapa);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
+        if (mapa[nom]) {
+          mapa[nom] = {
+            ...mapa[nom],
+            info: comarca,
+          };
+        }
+      });
 
+      setCapçalera({
+        id: data.id,
+        titol: data.titol,
+        es_original: data.es_original,
+      });
+
+      setComarquesMap(mapa);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const reload = () => {
+    console.log("Reloading repte with id:", id);
     fetchRepte();
-  }, []);
+  };
+  useEffect(() => {
+    fetchRepte();
+  }, [id]);
 
-  return { ComarquesMap, capçalera, loading, error };
+  return { ComarquesMap, capçalera, loading, reload: reload, error };
 };

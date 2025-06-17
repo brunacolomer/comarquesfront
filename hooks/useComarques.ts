@@ -13,10 +13,8 @@ export const useComarques = () => {
     try {
       const backendData = await getComarques();
       const mapa = { ...mapDataComarques };
-      console.log(backendData);
       Object.keys(backendData).map((region) => {
         if (mapa[region]) {
-          console.log("es aixo", backendData[region]);
           mapa[region] = {
             ...mapa[region], // dades visuals del mapa (path, etc.)
             info: backendData[region], // afegim info nova

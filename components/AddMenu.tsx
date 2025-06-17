@@ -69,8 +69,7 @@ export const AddMenu = ({ open, setOpen, addAmic }) => {
       <Button
         circular
         size="$5"
-        elevate
-        bg={open ? "$red10" : "$blue10"}
+        bg={open ? "$red10" : "$primary"}
         onPress={() => setOpen((prev) => !prev)}
       >
         <Text color="white">{open ? "×" : "+"}</Text>
