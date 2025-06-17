@@ -55,7 +55,7 @@ export default function InfiniteCanvas() {
   const translateX = useSharedValue(0);
   const [visiblerepte, setVisiblerepte] = useState(false);
   const [comarcaRepte, setComarcaRepte] = useState<ComarcaData>({});
-  const { reptes } = useReptes();
+  const { reptes, reload:reloadlist } = useReptes();
   useEffect(() => {
     if (reptes) {
       setRepteId(reptes.results[0]?.id || -1);
@@ -122,7 +122,7 @@ export default function InfiniteCanvas() {
         content={comarcaRepte}
         repteId={"" + repteId}
       />
-      <AddMenu open={open} setOpen={setOpen} addAmic={createFriend} />
+      <AddMenu open={open} setOpen={setOpen} reload={reloadlist} addAmic={createFriend} />
 
       {/* Wrap the entire map content in animated view for transitions */}
       <Animated.View

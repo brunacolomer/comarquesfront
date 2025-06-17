@@ -1,6 +1,6 @@
 import { YStack, XStack, Text, Image } from "tamagui";
 import Svg, { Path } from "react-native-svg";
-import MapaPathsComarques from "../constants/MapaPathsComarques.json";
+import MapaPathsComarques from "../constants/MapaPathsComarques_with_square_viewBox.json";
 
 export const Post = ({
   id,
@@ -15,9 +15,9 @@ export const Post = ({
   return (
     <YStack bg="white" onPress={onPress}>
       <XStack>
-        <Svg width={50} height={50} viewBox="350 400 200 200">
+        <Svg width={50} height={50} viewBox={MapaPathsComarques[comarca].viewBox}>
           <Path
-            d={MapaPathsComarques["El Garraf"].d}
+            d={MapaPathsComarques[comarca].d}
             fill="black"
             stroke="black"
             strokeWidth={2}

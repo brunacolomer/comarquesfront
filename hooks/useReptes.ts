@@ -16,9 +16,7 @@ export const useReptes = () => {
   const [reptes, setReptes] = useState<ReptesType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchReptes = async () => {
+const fetchReptes = async () => {
       try {
         const data = await getReptes();
         setReptes(data);
@@ -29,9 +27,12 @@ export const useReptes = () => {
         setLoading(false);
       }
     };
+  useEffect(() => {
+    
 
     fetchReptes();
   }, []);
 
-  return { reptes, loading, error };
+
+  return { reptes, loading, reload:fetchReptes, error };
 };
