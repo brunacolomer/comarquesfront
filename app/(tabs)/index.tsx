@@ -2,6 +2,12 @@ import { ExternalLink } from "@tamagui/lucide-icons";
 import { Anchor, H2, Paragraph, XStack, YStack, Text, Button } from "tamagui";
 import { ToastControl } from "app/CurrentToast";
 import { useSession } from "auth/ctx";
+import { LogBox } from "react-native";
+
+// 👇 Ignora el warning de "two children with the same key"
+LogBox.ignoreLogs([
+  "Warning: Encountered two children with the same key",
+]);
 
 export default function TabOneScreen() {
   const { signOut } = useSession();

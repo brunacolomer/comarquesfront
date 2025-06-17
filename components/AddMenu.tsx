@@ -1,13 +1,13 @@
-import { YStack, Button, Text, Dialog, XStack, Image, Input } from "tamagui";
+import { YStack, Button, Text, Dialog, XStack, Image, Input, RadioGroup,  Label } from "tamagui";
 import { BackHandler } from "react-native";
 import { useEffect, useState } from "react";
 import { ChevronDown, X, Camera } from "@tamagui/lucide-icons";
 import { createFriendship } from "services/friendship";
 import * as ImagePicker from "expo-image-picker";
-
-export const AddMenu = ({ open, setOpen, addAmic }) => {
+import { createOriginalRepte } from "services/repteoriginal";
+export const AddMenu = ({ open, setOpen, addAmic, reload}) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [dialogRepteOpen, setDialogRepteOpen] = useState(false);
   useEffect(() => {
     const onBackPress = () => {
       if (dialogOpen) {
@@ -52,12 +52,13 @@ export const AddMenu = ({ open, setOpen, addAmic }) => {
             elevate
             size="$4"
             onPress={() => {
-              console.log("Nota");
-              setDialogOpen(true);
+              setDialogRepteOpen(true);
+              setOpen(false);
             }}
           >
             ✏️ Afegir nou repte
           </Button>
+
         </>
       )}
 
@@ -65,6 +66,22 @@ export const AddMenu = ({ open, setOpen, addAmic }) => {
         open={dialogOpen}
         setOpen={setDialogOpen}
         addAmic={addAmic}
+      />
+      <AddOriginalRepteDialog
+        open={dialogRepteOpen}
+        setOpen={setDialogRepteOpen}
+        onCreate={async ({ titol, visiblitat, permissos }) => {
+          try {
+            const resposta = await createOriginalRepte(titol, visiblitat, permissos);
+            console.log("Repte creat:", resposta);
+            reload();
+            // opcional: redirigeix a /repte/:id
+            // router.push(`/repte/${resposta.id}`);
+          } catch (err) {
+            alert("Error creant repte");
+            console.error(err);
+          }
+        }}
       />
       <Button
         circular
@@ -181,6 +198,106 @@ const AddFriendshipDialog = ({ open, setOpen, addAmic }) => {
                 }}
               >
                 Afegeix
+              </Button>
+            </Dialog.Close>
+          </XStack>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog>
+  );
+};
+
+
+function RadioGroupItemWithLabel(props: {
+  size: any
+  value: string
+  label: string
+  group?: string // 👈 afegeix identificador únic per grup
+}) {
+  const id = `radiogroup-${props.group ?? "default"}-${props.value}`;
+  return (
+    <XStack width={300} items="center" space="$4">
+      <RadioGroup.Item value={props.value} id={id} size={props.size} key={id}>
+        <RadioGroup.Indicator />
+      </RadioGroup.Item>
+      <Label size={props.size} htmlFor={id} key={id}>
+        {props.label}
+      </Label>
+    </XStack>
+  );
+}
+
+
+
+const AddOriginalRepteDialog = ({
+  open,
+  setOpen,
+  onCreate,
+}: {
+  open: boolean;
+  setOpen: (b: boolean) => void;
+  onCreate: (dades: {
+    titol: string;
+    visiblitat: "PUBLIC" | "AMICS" | "ME";
+    permissos: "PUBLIC" | "AMICS" | "ME";
+  }) => void;
+}) => {
+  const [titol, setTitol] = useState("");
+  const [visiblitat, setVisiblitat] = useState<"PUBLIC" | "AMICS" | "ME">("PUBLIC");
+  const [permissos, setPermissos] = useState<"PUBLIC" | "AMICS" | "ME">("PUBLIC");
+
+  return (
+    <Dialog modal open={open}>
+      <Dialog.Portal>
+        <Dialog.Overlay bg="rgba(0,0,0,0.2)" />
+
+        <Dialog.Content bordered elevate width={320} gap="$4" p="$4">
+          <Dialog.Title>Afegeix un repte</Dialog.Title>
+          <Dialog.Description>
+            Escriu el títol i defineix visibilitat i permisos.
+          </Dialog.Description>
+
+          <Input
+            placeholder="Títol del repte"
+            onChange={(e) => setTitol(e.nativeEvent.text)}
+          />
+
+          <Text fontWeight="600">Qui pot veure el repte?</Text>
+          <RadioGroup
+            value={visiblitat}
+            onValueChange={(v) => setVisiblitat(v as any)}
+            name="visibilitat"
+          >
+            <YStack gap="$2">
+              <RadioGroupItemWithLabel group="visibilitat" value="PUBLIC" label="Públic" size="$3" />
+              <RadioGroupItemWithLabel group="visibilitat" value="AMICS" label="Només amics" size="$3" />
+              <RadioGroupItemWithLabel group="visibilitat" value="ME" label="Privat (només jo)" size="$3" />
+            </YStack>
+          </RadioGroup>
+
+          <Text fontWeight="600">Qui pot copiar el repte?</Text>
+          <RadioGroup
+            value={permissos}
+            onValueChange={(v) => setPermissos(v as any)}
+            name="permissos"
+          >
+            <YStack gap="$2">
+              <RadioGroupItemWithLabel group="permissos" value="PUBLIC" label="Tothom" size="$3" />
+              <RadioGroupItemWithLabel group="permissos" value="AMICS" label="Només amics" size="$3" />
+              <RadioGroupItemWithLabel group="permissos" value="ME" label="Ningú" size="$3" />
+            </YStack>
+          </RadioGroup>
+
+          <XStack justifyContent="flex-end" gap="$2">
+            <Dialog.Close asChild>
+              <Button
+                theme="active"
+                onPress={() => {
+                  onCreate({ titol, visiblitat, permissos });
+                  setOpen(false);
+                }}
+              >
+                Crear repte
               </Button>
             </Dialog.Close>
           </XStack>
